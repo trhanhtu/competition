@@ -220,8 +220,7 @@
           </h2>
           <p class="text-lg text-gray-700 mb-4">
             Sử dụng chiến lược <span class="bg-gray-200 mx-1">.or()</span> của
-            Playwright để cung cấp các locator dự phòng khi UI thay đổi (như bạn
-            yêu cầu).
+            Playwright để cung cấp các locator dự phòng khi UI thay đổi.
           </p>
           <pre><code><span style="color:#569CD6;">// LoginView.ts</span>
 <span style="color:#569CD6;">public</span> <span style="color:#4EC9B0;">get</span> <span style="color:#9CDCFE;">emailInput</span>(): <span style="color:#4EC9B0;">Locator</span> {
@@ -362,7 +361,7 @@
           <p class="text-lg text-gray-700 mb-4">
             Chúng tôi có test case riêng, dùng
             <span class="bg-gray-200 mx-1">page.route()</span> để giả lập BE trả
-            về 503 (Service Unavailable) Phục vụ tốt trong việc giả lập tình
+            về 503 (Service Unavailable). Phục vụ tốt trong việc giả lập tình
             huống.
           </p>
           <pre><code><span style="color:#569CD6;">// voucher.be-failure.spec.ts</span>
@@ -620,3 +619,4 @@ Call log:
     </script>
   </body>
 </html>
+
