@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo Framework - Apollo E2E</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* CSS nội tuyến để dễ dàng copy-paste */
+      body {
+        background-color: #fcfaf0; /* rgb(252, 250, 238) */
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+      }
+      .slide {
+        width: 100vw;
+        height: 100vh;
+        display: none; /* Ẩn mặc định */
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 4rem;
+        box-sizing: border-box;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .slide.active {
+        display: flex; /* Hiển thị slide hiện tại */
+      }
+      /* Ghi đè config Tailwind với màu của công ty bạn */
+      .bg-primary {
+        background-color: #384b70;
+      } /* rgb(56, 75, 112) */
+      .text-primary {
+        color: #384b70;
+      }
+      .bg-secondary {
+        background-color: #507687;
+      } /* rgb(80, 118, 135) */
+      .text-secondary {
+        color: #507687;
+      }
+      .bg-cream {
+        background-color: #fcfaf0;
+      } /* rgb(252, 250, 238) */
+      .text-cream {
+        color: #fcfaf0;
+      }
+      .bg-accent {
+        background-color: #b8001f;
+      } /* rgb(184, 0, 31) */
+      .text-accent {
+        color: #b8001f;
+      }
+
+      pre code {
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.9rem;
+        border-radius: 8px;
+        padding: 1rem;
+        background-color: #2d3748; /* Dark bg for code */
+        color: #e2e8f0; /* Light text for code */
+        display: block;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+      .slide-footer {
+        position: absolute;
+        bottom: 2rem;
+        right: 2rem;
+        font-size: 1rem;
+        color: #999;
+      }
+    </style>
+  </head>
+  <body class="bg-cream">
+    <div
+      class="slide active bg-primary text-cream"
+      style="justify-content: space-between"
+    >
+      <div class="w-full">
+        <img
+          width="300"
+          src="https://projects.kyanon.digital/v-1753070735409/images/red-kyanon-logo.png"
+        />
+        <h3 class="text-3xl font-light text-secondary">
+          Manual QC vs. Automation Playwright
+        </h3>
+        <h1 class="text-8xl font-bold mt-4">Apollo E2E Framework</h1>
+      </div>
+      <div class="w-full text-right">
+        <h2 class="text-4xl font-semibold">Team: Nhóm 5</h2>
+        <p class="text-2xl mt-2">Lâm Nguyễn, Tú Trần</p>
+      </div>
+    </div>
+
+    <div class="slide">
+      <h1 class="text-6xl font-bold text-primary mb-12">
+        Tầm nhìn Framework: 3 Trụ Cột
+      </h1>
+      <div class="flex w-full max-w-6xl space-x-8">
+        <div class="flex-1 p-8 bg-white rounded-xl shadow-xl">
+          <h2 class="text-4xl font-bold text-secondary mb-4">Ổn Định</h2>
+          <h3 class="text-4xl font-bold text-secondary mb-4">(Stable)</h3>
+          <p class="text-xl text-gray-700">
+            Giảm flaky tests, đảm bảo pass rate > 80% với cơ chế tự phục hồi và
+            readiness checks.
+          </p>
+        </div>
+        <div class="flex-1 p-8 bg-white rounded-xl shadow-xl">
+          <h2 class="text-4xl font-bold text-secondary mb-4">Thông Minh</h2>
+          <h3 class="text-4xl font-bold text-secondary mb-4">(Smart)</h3>
+          <p class="text-xl text-gray-700">
+            Tự động phân tích lỗi, gán người sửa và gửi cảnh báo real-time qua
+            Google Chat.
+          </p>
+        </div>
+        <div class="flex-1 p-8 bg-white rounded-xl shadow-xl">
+          <h2 class="text-4xl font-bold text-secondary mb-4">Hiệu Quả</h2>
+          <h3 class="text-4xl font-bold text-secondary mb-4">(Efficient)</h3>
+          <p class="text-xl text-gray-700">
+            Tích hợp UI và API (Hybrid) để tăng tốc độ, giảm thời gian chạy và
+            dọn dẹp data sạch sẽ.
+          </p>
+        </div>
+      </div>
+      <div class="slide-footer">Kiến trúc & Tầm nhìn</div>
+    </div>
+
+    <div class="slide">
+      <h1 class="text-6xl font-bold text-primary mb-12">
+        Kiến trúc Framework Linh hoạt (Monorepo)
+      </h1>
+      <div
+        class="flex w-full max-w-6xl space-x-8 bg-white p-10 rounded-xl shadow-xl"
+      >
+        <div class="w-1/2">
+          <pre><code>project-root/
+├── packages/
+│   ├── framework/    <-- (Lõi Framework)
+│   │   ├── src/
+│   │   │   └── api/
+│   │   └── package.json
+│   └── seller-center/  <-- (Test Cases)
+│       ├── src/
+│       │   ├── views/
+│       │   ├── configs/
+│       │   └── reporters/
+│       ├── scenarios/
+│       │   └── voucher.spec.ts
+│       └── package.json
+└── package.json</code></pre>
+        </div>
+        <div class="w-1/2 my-auto">
+          <h2 class="text-3xl font-bold text-secondary mb-4">
+            Tại sao là Monorepo?
+          </h2>
+          <ul class="list-disc pl-6 text-xl text-gray-700 space-y-3">
+            <li>
+              <span class="font-bold text-primary"
+                >Tách biệt Lõi & Test Case:<br
+              /></span>
+              Gói <span class="bg-gray-200 mx-1">@apollo/framework</span> là
+              lõi, chứa các API client, helper.<br />Gói
+              <span class="bg-gray-200 mx-1">@apollo/seller-center</span> chỉ
+              chứa test case.
+            </li>
+            <li>
+              <span class="font-bold text-primary">Dễ dàng Tái sử dụng:</span>
+              Lõi <span class="bg-gray-200 mx-1">framework</span> có thể được
+              tái sử dụng cho các dự án E2E khác (ví dụ:
+              <span class="bg-gray-200 mx-1">Admin Portal</span> ,
+              <span class="bg-gray-200 mx-1">KOL</span>) mà không cần
+              copy-paste.
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-footer">1. Kỹ thuật Automation</div>
+    </div>
+
+    <div class="slide">
+      <h1 class="text-6xl font-bold text-primary mb-12">
+        Tăng Độ Ổn định (Readiness & Self-Healing)
+      </h1>
+      <div class="flex w-full max-w-6xl space-x-8">
+        <div class="w-1/2 bg-white p-8 rounded-xl shadow-xl">
+          <h2 class="text-2xl font-bold text-secondary mb-4">
+            Cơ chế "View Sẵn Sàng"
+          </h2>
+          <p class="text-lg text-gray-700 mb-4">
+            Mọi <span class="bg-gray-200 mx-1">View</span> đều kế thừa từ
+            <span class="bg-gray-200 mx-1">BaseView</span>, buộc phải có hàm
+            <span class="bg-gray-200 mx-1">waitForReady()</span>. Test sẽ không
+            chạy cho đến khi View xác nhận đã tải xong.
+          </p>
+          <pre><code>
+<span style="color:#569CD6;">// BaseView.ts</span>
+<span style="color:#569CD6;">export</span> <span style="color:#569CD6;">abstract</span> <span style="color:#4EC9B0;">class</span> <span style="color:#4EC9B0;">BaseView</span> {
+&nbsp;&nbsp;<span style="color:#569CD6;">abstract</span> <span style="color:#9CDCFE;">waitForReady</span>(): <span style="color:#4EC9B0;">Promise</span>&lt;<span style="color:#569CD6;">void</span>&gt;;
+}
+
+<span style="color:#569CD6;">// VoucherView.ts</span>
+<span style="color:#569CD6;">export</span> <span style="color:#4EC9B0;">class</span> <span style="color:#4EC9B0;">VoucherView</span> <span style="color:#569CD6;">extends</span> <span style="color:#4EC9B0;">BaseView</span> {
+&nbsp;&nbsp;<span style="color:#C586C0;">async</span> <span style="color:#9CDCFE;">waitForReady</span>(): <span style="color:#4EC9B0;">Promise</span>&lt;<span style="color:#569CD6;">void</span>&gt; {
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6A9955;">// Chờ API list voucher &amp; button TẠO</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#C586C0;">await</span> this.page.waitForResponse(<span style="color:#CE9178;">"**/api/v1/voucher"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#C586C0;">await</span> expect(this.createShopVoucherButton).toBeVisible();
+&nbsp;&nbsp;}
+}
+</code></pre>
+        </div>
+        <div class="w-1/2 bg-white p-8 rounded-xl shadow-xl">
+          <h2 class="text-2xl font-bold text-secondary mb-4">
+            Chiến lược Locator Tự phục hồi
+          </h2>
+          <p class="text-lg text-gray-700 mb-4">
+            Sử dụng chiến lược <span class="bg-gray-200 mx-1">.or()</span> của
+            Playwright để cung cấp các locator dự phòng khi UI thay đổi (như bạn
+            yêu cầu).
+          </p>
+          <pre><code><span style="color:#569CD6;">// LoginView.ts</span>
+<span style="color:#569CD6;">public</span> <span style="color:#4EC9B0;">get</span> <span style="color:#9CDCFE;">emailInput</span>(): <span style="color:#4EC9B0;">Locator</span> {
+  <span style="color:#6A9955;">// Thử ID trước (nhanh nhất)</span>
+  <span style="color:#9CDCFE;">return</span> <span style="color:#DCDCAA;">SelfHealingLocator</span>(this.page, [
+                <span style="color:#CE9178;">'#normal_login_username'</span>,
+                <span style="color:#6A9955;">// Nếu không, thử bằng 'name'</span>
+                <span style="color:#CE9178;">'input[name="username"]'</span>,
+                <span style="color:#6A9955;">// Cuối cùng, thử bằng placeholder</span>
+                <span style="color:#CE9178;">'[placeholder="Email"]'</span>,
+            ])
+}</code></pre>
+        </div>
+      </div>
+      <div class="slide-footer">1. Kỹ thuật Automation & Pass Rate</div>
+    </div>
+    <div class="slide">
+      <h1 class="text-6xl font-bold text-primary mb-12">
+        Tối ưu Tốc độ & Môi trường
+      </h1>
+      <div class="flex w-full max-w-6xl space-x-8">
+        <div class="w-1/2 bg-white p-8 rounded-xl shadow-xl">
+          <h2 class="text-2xl font-bold text-secondary mb-4">
+            1. Chuyển đổi Môi trường Linh hoạt
+          </h2>
+          <p class="text-lg text-gray-700 mb-4">
+            Framework tự động tải cấu hình (URL, tài khoản) cho đúng môi trường
+            (UAT, Predev) bằng file `.env`.
+          </p>
+<pre><code><span style="color:#569CD6;"># 1. Định nghĩa file .env.uat</span>
+<span style="color:#9CDCFE;">BASE_URL</span>=<span style="color:#CE9178;">"https1//uat.seller-center.com"</span>
+<span style="color:#9CDCFE;">TEST_USER_USERNAME</span>=<span style="color:#CE9178;">"uat_tester"</span>
+
+<span style="color:#569CD6;"># 2. Định nghĩa file .env.predev</span>
+<span style="color:#9CDCFE;">BASE_URL</span>=<span style="color:#CE9178;">"https1//predev.seller-center.com"</span>
+<span style="color:#9CDCFE;">TEST_USER_USERNAME</span>=<span style="color:#CE9178;">"predev_tester"</span>
+
+<span style="color:#569CD6;"># 3. Chạy test với cờ ENV</span>
+<span style="color:#6A9955;"># Framework sẽ tự động chọn file .env.uat</span>
+<span style="color:#B5CEA8;">$</span> cross-env <span style="color:#9CDCFE;">ENV</span>=uat npm run demo:happy
+</code></pre>
+        </div>
+        <div class="w-1/2 bg-white p-8 rounded-xl shadow-xl">
+          <h2 class="text-2xl font-bold text-secondary mb-4">
+            2. Đăng nhập Một lần (Global Setup)
+          </h2>
+          <p class="text-lg text-gray-700 mb-4">
+            Tiết kiệm 80% thời gian đăng nhập. Framework chỉ đăng nhập 1 lần và
+            lưu lại session.
+          </p>
+         <pre><code><span style="color:#569CD6;"># CHỈ CHẠY 1 LẦN DUY NHẤT</span>
+<span style="color:#569CD6;"># 1. global.setup.ts</span>
+<span style="color:#6A9955;">- Khởi chạy trình duyệt</span>
+<span style="color:#6A9955;">- Đăng nhập bằng UI</span>
+<span style="color:#6A9955;">- Lưu session vào file (user.uat.json)</span>
+
+<span style="color:#569CD6;"># CHẠY CHO TẤT CẢ TEST CASE (song song)</span>
+<span style="color:#569CD6;"># 2. playwright.config.ts</span>
+<span style="color:#6A9955;">- projects:</span>
+    <span style="color:#6A9955;">use:</span>
+      <span style="color:#6A9955;"># Tải session từ file đã lưu</span>
+      <span style="color:#9CDCFE;">storageState</span>: <span style="color:#CE9178;">'playwright/.auth/user.uat.json'</span>
+      
+<span style="color:#569CD6;"># -> Kết quả: Mọi test case đều bắt đầu</span>
+<span style="color:#569CD6;">#    trong trạng thái "đã đăng nhập".</span>
+</code></pre>
+        </div>
+      </div>
+      <div class="slide-footer">1. Kỹ thuật Automation (Nâng cao)</div>
+    </div>
+    <div class="slide">
+      <h1 class="text-6xl font-bold text-primary mb-12">
+        Hybrid Testing: UI & API Phối hợp
+      </h1>
+      <div class="flex w-full max-w-6xl space-x-8">
+        <div class="w-2/5 my-auto">
+          <img src="step.png" class="rounded-xl shadow-lg" />
+        </div>
+        <div class="w-3/5 bg-white p-8 rounded-xl shadow-xl">
+          <h2 class="text-3xl font-bold text-secondary mb-4">
+            Case Study: Tạo Voucher
+          </h2>
+          <ul class="list-decimal pl-6 text-xl text-gray-700 space-y-4">
+            <li>
+              <span class="font-bold">BƯỚC 1 (UI):</span> Dùng UI (form) để điền
+              thông tin và tạo voucher.
+            </li>
+            <li>
+              <span class="font-bold">BƯỚC 2 (API Assert):</span> Dùng
+              <span class="bg-gray-200 mx-1">waitForJsonAndAssert</span> để
+              <b>chặn và kiểm tra</b> API response
+              <span class="text-orange-900">POST /api/v4/voucher</span> phải trả
+              về status 201.
+            </li>
+            <li>
+              <span class="font-bold">BƯỚC 3 (Cleanup):</span> Dùng
+              <span class="bg-gray-200 mx-1">test.afterAll</span> hook, gọi
+              thẳng API
+              <span class="bg-gray-200 mx-1">DELETE /api/v4/voucher/:id</span>
+              để dọn dẹp data.
+            </li>
+          </ul>
+          <p class="text-xl text-gray-700 mt-6 bg-secondary/10 p-4 rounded-lg">
+            → Kết quả: Test chạy nhanh, ổn định, bao phủ cả UI + API và tự động
+            dọn dẹp, không để lại rác.
+          </p>
+        </div>
+      </div>
+      <div class="slide-footer">2. Bao phủ Scenario & 3. Tư duy QC</div>
+    </div>
+
+    <div class="slide">
+      <h1 class="text-6xl font-bold text-primary mb-12">
+        Đo lường Hiệu năng & Giả lập Rủi ro
+      </h1>
+      <div class="flex w-full max-w-6xl space-x-8">
+        <div class="w-1/2 bg-white p-8 rounded-xl shadow-xl">
+          <h2 class="text-2xl font-bold text-secondary mb-4">
+            Giám sát Hiệu năng API
+          </h2>
+          <p class="text-lg text-gray-700 mb-4">
+            Tận dụng <span class="bg-gray-200 mx-1">waitForResponse</span> để đo
+            thời gian và assert performance, đảm bảo API không bị chậm.
+          </p>
+          <pre><code><span style="color:#569CD6;">// VoucherView.ts</span>
+(status, json, resp) =&gt; {
+  <span style="color:#9CDCFE;">const</span> timings = resp.request().timing();
+  <span style="color:#9CDCFE;">const</span> responseTimeMs = timings.responseEnd - timings.requestStart;
+
+  <span style="color:#6A9955;">// Đảm bảo API trả về dưới 3 giây</span>
+  <span style="color:#DCDCAA;">expect</span>(responseTimeMs).toBeLessThan(<span style="color:#B5CEA8;">3000</span>);
+}</code></pre>
+        </div>
+        <div class="w-1/2 bg-white p-8 rounded-xl shadow-xl">
+          <h2 class="text-2xl font-bold text-secondary mb-4">
+            Chủ động Giả lập Rủi ro
+          </h2>
+          <p class="text-lg text-gray-700 mb-4">
+            Chúng tôi có test case riêng, dùng
+            <span class="bg-gray-200 mx-1">page.route()</span> để giả lập BE trả
+            về 503 (Service Unavailable) Phục vụ tốt trong việc giả lập tình
+            huống.
+          </p>
+          <pre><code><span style="color:#569CD6;">// voucher.be-failure.spec.ts</span>
+<span style="color:#C586C0;">await</span> page.route(<span style="color:#CE9178;">'**/api/v1/voucher?*'</span>, route =&gt; {
+  route.fulfill({
+    <span style="color:#9CDCFE;">status</span>: <span style="color:#B5CEA8;">503</span>,
+    <span style="color:#9CDCFE;">body</span>: JSON.stringify({ <span style="color:#9CDCFE;">message</span>: <span style="color:#CE9178;">'Simulated BE Error'</span> }),
+  });
+});
+
+<span style="color:#6A9955;">// Test sẽ fail vì lỗi BE</span>
+<span style="color:#C586C0;">await</span> <span style="color:#DCDCAA;">expect</span>(response.status()).toBe(<span style="color:#B5CEA8;">200</span>);
+</code></pre>
+        </div>
+      </div>
+      <div class="slide-footer">2. Bao phủ Scenario & 3. Tư duy QC</div>
+    </div>
+
+    <div class="slide">
+      <h1 class="text-6xl font-bold text-primary mb-12">
+        Custom Enhancement: Hệ thống Cảnh báo Thông minh
+      </h1>
+      <div class="flex w-full max-w-6xl space-x-8">
+        <div class="w-1/2 my-auto">
+          <h2 class="text-4xl font-bold text-secondary mb-6">Vấn đề:</h2>
+          <p class="text-2xl text-gray-700 mb-8">
+            Test fail trong pipeline CI/CD, không ai biết. Khi biết thì không rõ
+            lỗi gì, phải log vào server để xem report.
+          </p>
+
+          <h2 class="text-4xl font-bold text-secondary mb-6">Giải pháp:</h2>
+          <p class="text-2xl text-gray-700">
+            Viết 1
+            <span class="font-bold text-primary"
+              >Custom Playwright Reporter</span
+            >
+            tích hợp thẳng vào Google Chat.
+          </p>
+        </div>
+        <div class="w-1/2">
+          <div class="bg-white p-4 rounded-lg shadow-2xl border">
+            <div class="flex items-center mb-2">
+              <img
+                src="https://picsum.photos/40/40?random=2"
+                class="rounded-full mr-2"
+              />
+              <span class="font-bold text-lg">Apollo E2E Bot</span>
+              <span class="text-sm text-gray-500 ml-2">Bây giờ</span>
+            </div>
+            <div class="border-l-4 border-accent pl-3">
+              <p class="font-bold text-lg text-accent">
+                🔥 TEST FAILED: Navigate to Voucher Page
+              </p>
+              <p class="text-sm text-gray-600">Feature: VOUCHER</p>
+
+              <div class="mt-4 bg-gray-100 p-3 rounded-lg">
+                <p class="font-bold text-gray-800">Error Message</p>
+                <pre
+                  class="bg-transparent text-red-700 p-0 text-sm"
+                ><code>Error: expect(locator).toBeVisible() failed
+Call log:
+  - waiting for locator('...')</code></pre>
+              </div>
+
+              <div class="mt-4 bg-gray-100 p-3 rounded-lg">
+                <p class="font-bold text-gray-800">Screenshot of Failure</p>
+                <img
+                  width="300"
+                  height="200"
+                  src="https://0x0.st/K_wa.png"
+                  class="mt-2 rounded-lg border"
+                />
+              </div>
+            </div>
+            <div class="flex items-start mt-4 ml-8">
+              <img
+                src="https://picsum.photos/30/30?random=4"
+                class="rounded-full mr-2"
+              />
+              <div class="bg-gray-100 rounded-lg p-2">
+                <span class="font-bold text-sm">Apollo E2E Bot</span>
+                <p>
+                  Assigned to FE: <span class="text-blue-600">@San_Tran</span>
+                  <span class="text-blue-600">@Thanh_Dao</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">4. Sáng tạo & Custom Enhancement</div>
+    </div>
+
+    <div class="slide">
+      <h1 class="text-6xl font-bold text-primary mb-12">
+        Tính năng Sáng tạo: Tự động Gán lỗi (AI Triage)
+      </h1>
+      <div class="flex w-full max-w-6xl space-x-8">
+        <div class="w-1/2 bg-white p-8 rounded-xl shadow-xl">
+          <h2 class="text-2xl font-bold text-secondary mb-4">
+            Phân tích Lỗi Thông minh
+          </h2>
+          <p class="text-lg text-gray-700 mb-4">
+            Reporter không chỉ báo lỗi, mà còn *phân tích* lỗi để gán đúng
+            người:
+          </p>
+          <pre><code><span style="color:#569CD6;">// GoogleChatReporter.ts</span>
+<span style="color:#9CDCFE;">determineResponsibleRole</span>(errorMessage) {
+  <span style="color:#9CDCFE;">const</span> error = errorMessage.toLowerCase();
+
+  <span style="color:#6A9955;">// Lỗi liên quan UI/Locator</span>
+  <span style="color:#C586C0;">if</span> ([<span style="color:#CE9178;">'locator'</span>, <span style="color:#CE9178;">'visible'</span>, <span style="color:#CE9178;">'timeout'</span>].some(key =&gt; error.includes(key))) {
+    <span style="color:#9CDCFE;">return</span> <span style="color:#4EC9B0;">Role</span>.<span style="color:#9CDCFE;">FE</span>; <span style="color:#6A9955;">// Gán cho Frontend</span>
+  }
+
+  <span style="color:#6A9955;">// Lỗi liên quan API/Network</span>
+  <span style="color:#C586C0;">if</span> ([<span style="color:#CE9178;">'api'</span>, <span style="color:#CE9178;">'status'</span>, <span style="color:#CE9178;">'503'</span>, <span style="color:#CE9178;">'400'</span>].some(key =&gt; error.includes(key))) {
+    <span style="color:#9CDCFE;">return</span> <span style="color:#4EC9B0;">Role</span>.<span style="color:#9CDCFE;">BE</span>; <span style="color:#6A9955;">// Gán cho Backend</span>
+  }
+
+  <span style="color:#6A9955;">// Lỗi không rõ, gán cho QC</span>
+  <span style="color:#9CDCFE;">return</span> <span style="color:#4EC9B0;">Role</span>.<span style="color:#9CDCFE;">QC</span>;
+}
+</code></pre>
+        </div>
+        <div class="w-1/2 bg-white p-8 rounded-xl shadow-xl">
+          <h2 class="text-2xl font-bold text-secondary mb-4">
+            Bản đồ Tổ chức (Squad Map)
+          </h2>
+          <p class="text-lg text-gray-700 mb-4">
+            Kết hợp với bản đồ Squad, hệ thống ping chính xác người chịu trách
+            nhiệm.
+          </p>
+          <pre><code><span style="color:#569CD6;">// 1. Lỗi ở feature 'voucher'</span>
+<span style="color:#9CDCFE;">const</span> feature = <span style="color:#CE9178;">'voucher'</span>;
+
+<span style="color:#569CD6;">// 2. Tra cứu: 'voucher' -> Squad.GROWTH</span>
+<span style="color:#9CDCFE;">const</span> squad = <span style="color:#9CDCFE;">FEATURE_TO_SQUAD_MAP</span>[feature];
+
+<span style="color:#569CD6;">// 3. Tra cứu: Lỗi là 'locator' -> Role.FE</span>
+<span style="color:#9CDCFE;">const</span> role = <span style="color:#4EC9B0;">Role</span>.<span style="color:#9CDCFE;">FE</span>;
+
+<span style="color:#569CD6;">// 4. Kết quả: Ping @FE Leads của Squad.GROWTH</span>
+<span style="color:#9CDCFE;">const</span> leads = <span style="color:#9CDCFE;">SQUAD_LEAD_MAP</span>[squad][role];
+<span style="color:#6A9955;">// -> @San_Tran, @Thanh_Dao</span>
+</code></pre>
+        </div>
+      </div>
+      <div class="slide-footer">4. Sáng tạo & Ứng dụng AI</div>
+    </div>
+
+    <div class="slide">
+      <h1 class="text-6xl font-bold text-primary mb-12">
+        Tối ưu Teamwork & Quản lý "Test Debt"
+      </h1>
+      <div class="flex w-full max-w-5xl space-x-8">
+        <div class="w-1/2 my-auto">
+          <img
+            width="500"
+            height="300"
+            src="bug_track.png"
+            class="rounded-xl shadow-lg"
+          />
+        </div>
+        <div class="w-1/2 bg-white p-8 rounded-xl shadow-xl">
+          <h2 class="text-3xl font-bold text-secondary mb-4">
+            Quản lý Test với <span class="bg-gray-200 mx-1">test.fixme()</span>
+          </h2>
+          <p class="text-xl text-gray-700 mb-4">
+            Khi một test fail do một bug đã biết (đang được BE/FE sửa), chúng ta
+            không xóa test. Chúng ta dùng
+            <span class="bg-gray-200 mx-1">test.fixme()</span>.
+          </p>
+          <pre><code><span style="color:#569CD6;">// test.fixme()</span>
+<span style="color:#6A9955;">// Test này sẽ bị BỎ QUA khi chạy</span>
+<span style="color:#6A9955;">// và được đánh dấu là 'fixme' trong report</span>
+<span style="color:#DCDCAA;">test</span>.<span style="color:#9CDCFE;">fixme</span>(<span style="color:#CE9178;">'Tạo voucher bị lỗi 500 - BE đang sửa'</span>, <span style="color:#C586C0;">async</span> ({ page }) =&gt; {
+  <span style="color:#6A9955;">// ... test logic</span>
+});
+</code></pre>
+          <p class="text-xl text-gray-700 mt-4">
+            <span class="font-bold text-primary">Lợi ích:</span> Giúp CI/CD
+            pipeline vẫn "XANH". Report sẽ nhắc nhở team về các "món nợ" (test
+            debt) cần được sửa sau khi bug được fix.
+          </p>
+        </div>
+      </div>
+      <div class="slide-footer">5. Teamwork & Presentation</div>
+    </div>
+
+    <div class="slide bg-primary text-cream">
+      <h1 class="text-8xl font-bold">Cảm ơn!</h1>
+      <h2 class="text-4xl font-light text-secondary mt-8">
+        Framework đã sẵn sàng cho Q&A
+      </h2>
+
+      <div class="mt-24 w-full max-w-4xl">
+        <h3 class="text-3xl text-center mb-6">Demo Scripts</h3>
+        <div class="grid grid-cols-3 gap-4 text-lg">
+          <div class="bg-secondary/50 p-4 rounded-lg">
+            <p class="font-bold">Chạy Happy Path:</p>
+            <pre
+              class="bg-transparent p-0"
+            ><code>npm run demo:happy</code></pre>
+          </div>
+          <div class="bg-accent/70 p-4 rounded-lg">
+            <p class="font-bold">Demo Lỗi FE:</p>
+            <pre
+              class="bg-transparent p-0"
+            ><code>npm run demo:fail-fe</code></pre>
+          </div>
+          <div class="bg-accent/70 p-4 rounded-lg">
+            <p class="font-bold">Demo Lỗi BE:</p>
+            <pre
+              class="bg-transparent p-0"
+            ><code>npm run demo:fail-be</code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer text-cream/50">Xin cảm ơn ban giám khảo</div>
+    </div>
+
+    <script>
+      let currentSlide = 0;
+      const slides = document.querySelectorAll(".slide");
+      const totalSlides = slides.length;
+
+      function showSlide(n) {
+        slides.forEach((slide) => {
+          slide.classList.remove("active");
+        });
+        slides[n].classList.add("active");
+      }
+
+      function nextSlide() {
+        currentSlide = (currentSlide + 1) % totalSlides;
+        showSlide(currentSlide);
+      }
+
+      function prevSlide() {
+        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+        showSlide(currentSlide);
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight") {
+          nextSlide();
+        } else if (e.key === "ArrowLeft") {
+          prevSlide();
+        }
+      });
+
+      // Khởi tạo slide đầu tiên
+      showSlide(currentSlide);
+    </script>
+  </body>
+</html>
